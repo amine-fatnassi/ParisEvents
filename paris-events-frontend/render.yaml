@@ -1,0 +1,17 @@
+services:
+  - type: static
+    name: paris-events-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    publishPath: dist/paris-events-frontend/browser
+    envVars:
+      - key: API_URL
+        value: https://paris-events-api.onrender.com
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

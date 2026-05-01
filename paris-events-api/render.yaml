@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: paris-events-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 2 --timeout 120 --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DEBUG
+        value: false
+      - key: MODEL_PATH
+        value: models
+      - key: ALLOWED_ORIGINS
+        value: "*"
+    healthCheckPath: /health
+    autoDeploy: true

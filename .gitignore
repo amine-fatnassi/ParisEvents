@@ -1,0 +1,68 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# ── Virtual Environments ──
+venv/
+env/
+.venv/
+ENV/
+
+# ── Jupyter ──
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── Data files (large) ──
+*.csv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+
+# ── ML Models (large binary files) ──
+# Uncomment below to ignore .pkl if too large for git
+# *.pkl
+
+# ── Environment Variables ──
+.env
+.env.local
+.env.production
+
+# ── Node / Angular ──
+node_modules/
+dist/
+.angular/cache/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── IDEs & Editors ──
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# ── Logs ──
+*.log
+logs/
+
+# ── OS ──
+.DS_Store
+Desktop.ini
