@@ -155,6 +155,9 @@ def load_models():
     global MODEL1, MODEL2, MODELS_LOADED
     m1_path = os.path.join(MODEL_PATH, "model1_price_classifier.pkl")
     m2_path = os.path.join(MODEL_PATH, "model2_audience_classifier.pkl")
+    if not os.path.exists(m1_path) or not os.path.exists(m2_path):
+        logger.warning("Model files not found — skipping load (run retrain.py first).")
+        return
     logger.info(f"Loading Model 1 from {m1_path}")
     MODEL1 = joblib.load(m1_path)
     logger.info(f"Loading Model 2 from {m2_path}")
