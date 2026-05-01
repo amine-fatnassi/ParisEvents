@@ -1,22 +1,23 @@
-# 🗼 Paris Events AI — ML Prediction Dashboard
+# 🗼 Paris Cultural Events — Data Analysis & ML Dashboard
 
-> *A business student's dive into data science — built from scratch with real data, real models, and a real interface.*
+> *Internship admission project — Exploratory Data Analysis on Paris open data, extended with ML prediction models and a live web interface.*
 
 [![Python](https://img.shields.io/badge/Python-3.12+-blue?style=flat-square&logo=python)](https://python.org)
+[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?style=flat-square&logo=jupyter)](https://jupyter.org)
 [![Angular](https://img.shields.io/badge/Angular-17+-red?style=flat-square&logo=angular)](https://angular.io)
-[![Flask](https://img.shields.io/badge/Flask-3.0-black?style=flat-square&logo=flask)](https://flask.palletsprojects.com)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange?style=flat-square&logo=scikit-learn)](https://scikit-learn.org)
+[![Flask](https://img.shields.io/badge/Flask-API-black?style=flat-square&logo=flask)](https://flask.palletsprojects.com)
 [![Dataset](https://img.shields.io/badge/Dataset-Paris%20Open%20Data-blueviolet?style=flat-square)](https://opendata.paris.fr)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-parisevents.onrender.com-green?style=flat-square)](https://parisevents.onrender.com)
 
 ---
 
-## 👋 About This Project
+## 👋 About
 
-Hey! I'm a business student who got curious about data science and decided to go all in.
+I'm a business student with a strong interest in data science. This project was built as part of an **internship admission test** — the core deliverable is a thorough exploratory data analysis of Paris cultural events data.
 
-This project is my attempt at building a **complete end-to-end ML pipeline** — from raw open data to trained models to a deployed web interface. No shortcuts. I explored the data, built the models, wrapped them in an API, and designed a frontend to interact with them.
+Going further, I personally challenged myself (*ijtihad*) to take the analysis all the way to trained ML models and a live interactive dashboard. That part wasn't required — it was just the direction my curiosity took me.
 
-It's messy in some places, experimental in others, and 100% a learning experience. That's the vibe.
+**Live dashboard →** [parisevents.onrender.com](https://parisevents.onrender.com)
 
 ---
 
@@ -26,127 +27,136 @@ It's messy in some places, experimental in others, and 100% a learning experienc
 ParisEvents/
 │
 ├── 📓 notebooks/
-│   ├── FinalEDA.ipynb          ← Exploratory Data Analysis (full deep-dive)
-│   ├── Ml.ipynb                ← Model training pipeline (RF + LR)
-│   └── Report.ipynb            ← Professional evaluation report with charts
+│   ├── FinalEDA.ipynb          ← ★ Core deliverable — full exploratory analysis
+│   ├── Ml.ipynb                ← Model training (personal extra)
+│   └── Report.ipynb            ← Evaluation report (personal extra)
 │
-├── 🤖 paris-events-api/        ← Flask REST API (deploys on Render)
-│   ├── app.py                  ← Main API with /predict/price, /predict/audience
-│   ├── models/                 ← Serialized .pkl model files
-│   ├── requirements.txt
-│   ├── Procfile
-│   └── render.yaml
-│
-├── 🌐 paris-events-frontend/   ← Angular 17+ SPA dashboard
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── features/       ← Prediction form + Results card
-│   │   │   ├── core/           ← Services, models, interceptors
-│   │   │   └── shared/         ← Reusable UI components
-│   │   └── styles.scss         ← Global dark theme styles
-│   └── angular.json
-│
+├── 🤖 paris-events-api/        ← Flask REST API serving the ML models
+├── 🌐 paris-events-frontend/   ← Angular dashboard (live at parisevents.onrender.com)
 └── README.md
 ```
 
 ---
 
-## 🧠 The Machine Learning Part
+## 📊 Core Deliverable — Exploratory Data Analysis (`FinalEDA.ipynb`)
+
+This is the main work. A **complete EDA** on the [Que Faire à Paris](https://opendata.paris.fr/explore/dataset/que-faire-a-paris-/) dataset from the Paris Open Data portal.
 
 ### Dataset
-- **Source:** [Que Faire à Paris](https://opendata.paris.fr) — Paris Open Data API
-- **Size:** ~145,000 event records, 16 engineered features
-- **Features used:** tags, booking type, location, accessibility flags, session timing, indoor/outdoor, zipcode
+- **Source:** Paris Open Data API — *Que Faire à Paris?*
+- **Size:** ~145,000 event records across 16 engineered features (originally 69 raw columns)
+- **Type:** Real-world cultural events data — exhibitions, concerts, workshops, sports, kids activities, etc.
 
-### Model 1 — Price Classifier 💰
-> *Can the model predict if an event is free or paid?*
+### What the EDA covers
 
-- **Algorithm:** Random Forest Classifier
-- **Target:** `price_type` → binary (free / paid)
-- **Features:** TF-IDF on tags, temporal features, booking type, location flags
-- **Exported as:** `model1_price_classifier.pkl`
+**1. Data Quality & Cleaning**
+- Null value audit across all 69 columns — identifying missingness patterns and deciding what to drop vs. impute
+- Duplicate detection and deduplication
+- Type correction (dates, booleans, numerics)
+- Outlier analysis on price, duration, and session counts
 
-### Model 2 — Audience Classifier 👥
-> *Who is this event for?*
+**2. Feature Engineering**
+- Parsed `date_start` / `date_end` → `event_duration_days`, `is_weekend`, `month`, `day_of_week`
+- Extracted arrondissement from `address_zipcode`
+- Parsed raw `occurrences` text → session count, peak hour, session duration
+- Binarized `tags` (semicolon-separated categories) into individual feature flags
+- Derived `is_indoor` / `is_outdoor` from venue and tag patterns
+- Engineered `target_audience` from raw free-text `audience` field into 5 clean categories
 
+**3. Univariate Analysis**
+- Distribution of event categories (tags) — which types dominate Paris culture
+- Price type distribution (free vs. paid) — with proportions and counts
+- Accessibility features: PMR, blind, deaf, sign language, mental accessibility flags
+- Temporal distributions: events by month, weekday, and hour of day
+- Arrondissement breakdown — which districts host the most events
+
+**4. Bivariate & Multivariate Analysis**
+- Price type vs. event category — what kinds of events tend to be free vs. paid
+- Audience segment vs. event category — who goes to what
+- Duration vs. session count — identifying long-running events vs. one-off sessions
+- Indoor/outdoor vs. event type and season
+- Correlation matrix on numeric features
+- Accessibility features co-occurrence — which events are multi-accessible
+
+**5. Temporal Deep-Dive**
+- Event frequency over time — peak seasons for Paris cultural life
+- Day-of-week patterns — weekday vs. weekend activity comparison
+- Hour-of-day patterns — when events typically start
+- Duration anomaly detection — events where theoretical duration vs. actual sessions diverged
+
+**6. Key Insights**
+- The majority of Paris cultural events are free (~60%)
+- Arts & exhibitions dominate event volume, followed by kids & family activities
+- Saturday afternoons see the highest event density
+- Arrondissements 1, 4, and 13 are the most event-dense
+- Multi-accessibility events are rare but concentrated in specific categories (workshops)
+- Session duration has a heavy right-skew — most events are short, but a long tail of cultural festivals run for weeks
+
+---
+
+## 🤖 Personal Extra — ML Models
+
+After completing the EDA, I built two classification models on top of the cleaned dataset. This wasn't required — it was a personal challenge.
+
+### Model 1 — Price Type Classifier
+- **Algorithm:** Random Forest
+- **Target:** `price_type` → Free or Paid
+- **Why:** Binary, class-imbalanced, tree models handle mixed feature types well
+
+### Model 2 — Audience Segment Classifier
 - **Algorithm:** Logistic Regression (One-vs-Rest)
-- **Target:** `audience` → 5 classes (Kids & Family / Adults / Teens / Seniors / Tout public)
-- **Features:** Same feature pipeline as Model 1
-- **Exported as:** `model2_audience_classifier.pkl`
+- **Target:** `audience` → Kids & Family / Adults / Teens / Seniors / Tout public
+- **Why:** Multi-class, linear boundaries interpretable via coefficients
 
-Both models are wrapped in full **scikit-learn Pipelines** (preprocessing included), so predictions work end-to-end with a single `.predict()` call.
-
----
-
-## 🔬 Notebooks Breakdown
-
-| Notebook | What's inside |
-|----------|--------------|
-| `FinalEDA.ipynb` | Full EDA — distributions, null analysis, temporal patterns, bivariate analysis, tag breakdowns |
-| `Ml.ipynb` | Feature engineering, pipeline building, GridSearchCV, model training, export |
-| `Report.ipynb` | Professional report — confusion matrices, ROC curves, feature importance, side-by-side comparison |
+Both are wrapped in full **sklearn Pipelines** with TF-IDF tag vectorization, so deployment is a single `.predict()` call.
 
 ---
 
-## 🚀 The Interface
+## 🌐 Personal Extra — Live Dashboard
 
-Built an **Angular 17+** single-page app with a dark Paris-inspired design. You fill in event details and instantly get:
+Built an Angular 17+ single-page app that lets you fill in event details and get instant predictions from both models.
 
-- ✅ **Price prediction** — Free or Paid with confidence %
-- 🎯 **Audience prediction** — probability breakdown across 5 audience segments
+**→ [parisevents.onrender.com](https://parisevents.onrender.com)**
 
-The frontend talks to the Flask API over REST. It was my first time building a full Angular app from scratch — vibe coding this whole interface was honestly the most fun part.
+I vibe-coded the entire frontend and Flask API from scratch. First time building a full Angular app — worth it.
+
+> ⚠️ *The API is on Render's free tier — if it hasn't been used recently, the first request takes ~30s to wake up. Normal.*
 
 ### Running locally
 
-**Backend:**
 ```bash
+# Backend
 cd paris-events-api
 pip install -r requirements.txt
-python app.py
-# → http://localhost:5000/health
-```
+python app.py          # → http://localhost:5000/health
 
-**Frontend:**
-```bash
+# Frontend (new terminal)
 cd paris-events-frontend
 npm install
-npm start
-# → http://localhost:4200
+npm start              # → http://localhost:4200
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Tech |
-|-------|------|
-| Data Analysis | Python, Pandas, NumPy, Matplotlib, Seaborn |
-| Machine Learning | scikit-learn (Random Forest, Logistic Regression, Pipeline, TF-IDF) |
-| Backend API | Flask, Flask-CORS, Gunicorn |
+| Layer | Stack |
+|---|---|
+| Analysis | Python, Pandas, NumPy, Matplotlib, Seaborn |
+| ML | scikit-learn — Random Forest, Logistic Regression, Pipeline, TF-IDF |
+| API | Flask, Flask-CORS, Gunicorn |
 | Frontend | Angular 17+, TypeScript, Angular Signals |
-| Styling | Vanilla CSS, dark glassmorphism theme |
-| Deployment | Render.com (API + static frontend) |
+| Deployment | Render.com |
 
 ---
 
-## 📊 What I Learned
+## 📁 Dataset
 
-This project pushed me to actually understand:
+**[Que Faire à Paris — Paris Open Data](https://opendata.paris.fr/explore/dataset/que-faire-a-paris-/)**  
+Published by the City of Paris. Public dataset, updated regularly.
 
-- How to clean and explore real-world messy data (the EDA phase was brutal)
-- How sklearn Pipelines work and why they matter for deployment
-- How to build and evaluate two very different classifier types
-- How REST APIs connect ML models to frontend interfaces
-- How Angular's reactive forms and HTTP client work
-- That vibe coding an entire dashboard at 2am is a valid strategy
+The raw CSV (`paris_events_for_ml.csv`) is excluded from the repo due to size (~34MB). The notebooks load it from the local path.
 
 ---
 
-## 🤝 Dataset Credit
-
-Data from **[Paris Open Data — Que Faire à Paris](https://opendata.paris.fr/explore/dataset/que-faire-a-paris-/)** — a public dataset of cultural events in Paris published by the City of Paris.
-
----
-
-*Made with curiosity and way too many reruns of `npm start` — Amine*
+*Amine Fatnassi — Business student, data curious.*
