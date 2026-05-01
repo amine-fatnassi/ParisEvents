@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://parisevents.onrender.com'
+  apiUrl: 'https://pariseventsback.onrender.com'
 };
